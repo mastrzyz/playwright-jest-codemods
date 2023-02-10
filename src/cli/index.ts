@@ -6,7 +6,6 @@ import inquirer from 'inquirer'
 import meow from 'meow'
 import updateNotifier from 'update-notifier'
 
-import checkGitStatus from './git-status'
 import { executeTransformations, Parser } from './transformers'
 
 const cli = meow(
@@ -46,9 +45,6 @@ function getValidPackage() {
 
 updateNotifier({ pkg: getValidPackage() }).notify({ defer: false })
 
-if (!cli.flags.dry) {
-  checkGitStatus(cli.flags.force)
-}
 
 const TRANSFORMER_AVA = 'ava'
 const TRANSFORMER_CHAI_ASSERT = 'chai-assert'
@@ -130,14 +126,14 @@ const TRANSFORMER_INQUIRER_CHOICES = [
 ]
 
 const PARSER_INQUIRER_CHOICES: { name: string; value: Parser }[] = [
-  {
+/*  {
     name: 'Babel',
     value: 'babel',
   },
   {
     name: 'Flow',
     value: 'flow',
-  },
+  },*/
   {
     name: 'TypeScript',
     value: 'ts',
