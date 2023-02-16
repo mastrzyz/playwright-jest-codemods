@@ -2,22 +2,14 @@ import * as jscodeshift from 'jscodeshift'
 
 import finale from '../utils/finale'
 import { removeRequireAndImport } from '../utils/imports'
-import jasmineThisTransformer from './jasmine-this'
 
 const methodMap = {
-  suite: 'describe',
-  context: 'describe',
-  specify: 'test',
-  test: 'test',
-  it: 'it',
-  before: 'beforeAll',
-  beforeEach: 'beforeEach',
-  setup: 'beforeEach',
-  after: 'afterAll',
-  afterEach: 'afterEach',
-  teardown: 'afterEach',
-  suiteSetup: 'beforeAll',
-  suiteTeardown: 'afterAll',
+  describe: 'test.describe',
+  beforeAll: 'test.beforeAll',
+  afterAll: 'test.afterAll',
+  beforeEach: 'test.beforeEach',
+  afterEach: 'test.afterEach',
+  it: 'test',
 }
 
 const jestMethodsWithDescriptionsAllowed = new Set(['test', 'it', 'describe'])
@@ -89,11 +81,6 @@ const mochaToJest: jscodeshift.Transform = (fileInfo, api, options) => {
   })
 
   fileInfo.source = finale(fileInfo, j, ast, options)
-
-  const transformedSource = jasmineThisTransformer(fileInfo, api, options)
-  if (transformedSource) {
-    fileInfo.source = transformedSource
-  }
 
   return fileInfo.source
 }
