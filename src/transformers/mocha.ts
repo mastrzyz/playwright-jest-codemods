@@ -35,6 +35,23 @@ const addPlaywrightTestImport = (
   j(ast.find(j.Declaration).at(0).get()).insertBefore(importStatement)
 }
 
+const addFileNameIdentifiertoGetTeamsApp = (
+  j: jscodeshift.JSCodeshift,
+  ast: jscodeshift.Collection<any>
+) => {
+  ast
+    .find(j.CallExpression, {
+      type: 'CallExpression',
+      callee: { type: 'Identifier', name: 'getTeamsApp' },
+    })
+    .replaceWith((path) => {
+      return j.callExpression(
+        j.identifier('getTeamsApp'),
+        path.value.arguments.concat([j.identifier('__filename')])
+      )
+    })
+}
+
 const replaceJestGlobalsWithPlaywrightTestMethods = (
   j: jscodeshift.JSCodeshift,
   ast: jscodeshift.Collection<any>
@@ -90,7 +107,10 @@ const mochaToJest: jscodeshift.Transform = (fileInfo, api, options) => {
   const ast = j(fileInfo.source)
 
   addPlaywrightTestImport(j, ast)
+
   replaceJestGlobalsWithPlaywrightTestMethods(j, ast)
+
+  addFileNameIdentifiertoGetTeamsApp(j, ast)
 
   fileInfo.source = finale(fileInfo, j, ast, options)
   return fileInfo.source
