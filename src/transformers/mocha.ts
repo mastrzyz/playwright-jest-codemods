@@ -1,8 +1,6 @@
+// Description: This transformer converts Mocha tests to Playwright Test tests.
 import * as jscodeshift from 'jscodeshift'
-
 import finale from '../utils/finale'
-import { removeRequireAndImport } from '../utils/imports'
-
 const methodMap = {
   describe: 'test.describe',
   beforeAll: 'test.beforeAll',
@@ -29,12 +27,18 @@ function hasBinding(name, scope) {
   return scope.isGlobal ? false : hasBinding(name, scope.parent)
 }
 
-const mochaToJest: jscodeshift.Transform = (fileInfo, api, options) => {
-  const j = api.jscodeshift
-  const ast = j(fileInfo.source)
+const addPlaywrightTestImport = (
+  j: jscodeshift.JSCodeshift,
+  ast: jscodeshift.Collection<any>
+) => {
+  const importStatement = 'import { test } from "@playwright/test";'
+  j(ast.find(j.Declaration).at(0).get()).insertBefore(importStatement)
+}
 
-  removeRequireAndImport(j, ast, 'mocha')
-
+const replaceJestGlobalsWithPlaywrightTestMethods = (
+  j: jscodeshift.JSCodeshift,
+  ast: jscodeshift.Collection<any>
+) => {
   Object.keys(methodMap).forEach((mochaMethod) => {
     const jestMethod = methodMap[mochaMethod]
 
@@ -79,9 +83,16 @@ const mochaToJest: jscodeshift.Transform = (fileInfo, api, options) => {
         )
     })
   })
+}
+
+const mochaToJest: jscodeshift.Transform = (fileInfo, api, options) => {
+  const j = api.jscodeshift
+  const ast = j(fileInfo.source)
+
+  addPlaywrightTestImport(j, ast)
+  replaceJestGlobalsWithPlaywrightTestMethods(j, ast)
 
   fileInfo.source = finale(fileInfo, j, ast, options)
-
   return fileInfo.source
 }
 

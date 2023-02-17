@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-
 import chalk from 'chalk'
 import globby from 'globby'
 import inquirer from 'inquirer'
@@ -74,13 +73,8 @@ inquirer
 
     const skipImportDetection = false
     const standaloneMode = false
-    const mochaAssertion = false
 
     const transformers = [transformer]
-
-    if (mochaAssertion) {
-      transformers.push(mochaAssertion)
-    }
 
     const filesBeforeExpansion = cli.input.length ? cli.input : files
     const filesExpanded = expandFilePathsIfNeeded(filesBeforeExpansion)
