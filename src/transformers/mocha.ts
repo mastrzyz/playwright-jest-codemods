@@ -32,7 +32,18 @@ const addPlaywrightTestImport = (
   ast: jscodeshift.Collection<any>
 ) => {
   const importStatement = 'import { test } from "@playwright/test";'
-  j(ast.find(j.Declaration).at(0).get()).insertBefore(importStatement)
+  const importWithExpectStatement = 'import { test, expect } from "@playwright/test";'
+
+  // Find if we need the `expect` import
+  const hasExpect =
+    ast.find(j.CallExpression, {
+      type: 'CallExpression',
+      callee: { type: 'Identifier', name: 'expect' },
+    }).length > 0
+
+  j(ast.find(j.Declaration).at(0).get()).insertBefore(
+    hasExpect ? importWithExpectStatement : importStatement
+  )
 }
 
 const addFileNameIdentifiertoGetTeamsApp = (
