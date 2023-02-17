@@ -3,11 +3,13 @@ import * as jscodeshift from 'jscodeshift'
 import finale from '../utils/finale'
 const methodMap = {
   describe: 'test.describe',
+  xdescribe: 'test.describe.skip',
   beforeAll: 'test.beforeAll',
   afterAll: 'test.afterAll',
   beforeEach: 'test.beforeEach',
   afterEach: 'test.afterEach',
   it: 'test',
+  xit: 'test.skip',
 }
 
 const jestMethodsWithDescriptionsAllowed = new Set(['test', 'it', 'describe'])
