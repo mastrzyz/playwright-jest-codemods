@@ -48,6 +48,24 @@ const addPlaywrightTestImport = (
   )
 }
 
+const replaceJestSetTimeout = (
+  j: jscodeshift.JSCodeshift,
+  ast: jscodeshift.Collection<any>
+) => {
+  // jest.setTimeout -> test.setTimeout
+  ast
+    .find(j.CallExpression, {
+      type: 'CallExpression',
+      callee: { type: 'MemberExpression', property: { name: 'setTimeout' } },
+    })
+    .replaceWith((path) => {
+      return j.callExpression(
+        j.memberExpression(j.identifier('test'), j.identifier('setTimeout')),
+        path.value.arguments
+      )
+    })
+}
+
 const addFileNameIdentifiertoGetTeamsApp = (
   j: jscodeshift.JSCodeshift,
   ast: jscodeshift.Collection<any>
@@ -122,6 +140,7 @@ const mochaToJest: jscodeshift.Transform = (fileInfo, api, options) => {
   addPlaywrightTestImport(j, ast)
 
   replaceJestGlobalsWithPlaywrightTestMethods(j, ast)
+  replaceJestSetTimeout(j, ast)
 
   addFileNameIdentifiertoGetTeamsApp(j, ast)
 
