@@ -28,8 +28,7 @@
     "test": "jest --runInBand",
     "verify": "yarn lint && yarn build && ./bin/jest-codemods.js --version && yarn test:cov",
     "verify:bail": "yarn lint:bail && yarn verify",
-    "ci": "yarn verify:bail && codecov",
-    "prepare": "husky install"
+    "ci": "yarn verify:bail && codecov"
   },
   "lint-staged": {
     "*.js": [
@@ -74,7 +73,6 @@
     "eslint-plugin-jest": "26.9.0",
     "eslint-plugin-prettier": "4.2.1",
     "eslint-plugin-simple-import-sort": "8.0.0",
-    "husky": "8.0.3",
     "jest": "29.3.1",
     "lint-staged": "13.1.1",
     "prettier": "2.8.4",
