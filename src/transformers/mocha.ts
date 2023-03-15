@@ -1,6 +1,5 @@
 // Description: This transformer converts Mocha tests to Playwright Test tests.
 import * as jscodeshift from 'jscodeshift'
-import finale from '../utils/finale'
 const methodMap = {
   describe: 'test.describe',
   xdescribe: 'test.describe.skip',
@@ -144,7 +143,7 @@ const mochaToJest: jscodeshift.Transform = (fileInfo, api) => {
 
   addFileNameIdentifiertoGetTeamsApp(j, ast)
 
-  fileInfo.source = finale(fileInfo, j, ast)
+  fileInfo.source = ast.toSource()
   return fileInfo.source
 }
 

@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-import chalk from 'chalk'
 import globby from 'globby'
 import inquirer from 'inquirer'
 import meow from 'meow'
@@ -71,9 +70,6 @@ inquirer
   .then((answers) => {
     const { files } = answers
 
-    const skipImportDetection = false
-    const standaloneMode = false
-
     const transformers = [transformer]
 
     const filesBeforeExpansion = cli.input.length ? cli.input : files
@@ -85,19 +81,6 @@ inquirer
     }
 
     const transformerArgs = []
-    if (standaloneMode) {
-      transformerArgs.push('--standaloneMode=true')
-      console.log(
-        chalk.yellow('\nNOTICE: You need to manually install expect@21+ and jest-mock')
-      )
-    }
-
-    if (skipImportDetection) {
-      transformerArgs.push('--skipImportDetection=true')
-      console.log(
-        chalk.yellow('\nNOTICE: Skipping import detection, you might get false positives')
-      )
-    }
 
     return executeTransformations({
       files: filesExpanded,
