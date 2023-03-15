@@ -133,7 +133,7 @@ const replaceJestGlobalsWithPlaywrightTestMethods = (
   })
 }
 
-const mochaToJest: jscodeshift.Transform = (fileInfo, api, options) => {
+const mochaToJest: jscodeshift.Transform = (fileInfo, api) => {
   const j = api.jscodeshift
   const ast = j(fileInfo.source)
 
@@ -144,7 +144,7 @@ const mochaToJest: jscodeshift.Transform = (fileInfo, api, options) => {
 
   addFileNameIdentifiertoGetTeamsApp(j, ast)
 
-  fileInfo.source = finale(fileInfo, j, ast, options)
+  fileInfo.source = finale(fileInfo, j, ast)
   return fileInfo.source
 }
 
